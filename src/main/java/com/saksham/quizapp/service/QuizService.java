@@ -1,0 +1,56 @@
+package com.saksham.quizapp.service;
+
+import com.saksham.quizapp.dao.QuestionDao;
+import com.saksham.quizapp.dao.QuizDao;
+import com.saksham.quizapp.model.Question;
+import com.saksham.quizapp.model.QuestionWrapper;
+import com.saksham.quizapp.model.Quiz;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class QuizService {
+
+    @Autowired
+    QuizDao quizDao;
+    @Autowired
+    private QuestionDao questionDao;
+
+    public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
+
+        List<Question> questions = questionDao.findRandomQuestionsByCategory(category, numQ);
+
+        Quiz quiz = new Quiz();
+        quiz.setTitle(title);
+        quiz.setQuestions(questions);
+        quizDao.save(quiz);
+
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(int quizId) {
+        Optional<Quiz> quiz = quizDao.findById(quizId);
+        List<Question> questionsFromDB = quiz.get().getQuestions();
+        List<QuestionWrapper> questionsForUser = new ArrayList<>();
+
+        for (Question question : questionsFromDB) {
+            QuestionWrapper questionWrapper = new QuestionWrapper(
+                    question.getId(),
+                    question.getQuestionTitle(),
+                    question.getOption1(),
+                    question.getOption2(),
+                    question.getOption3(),
+                    question.getOption4()
+            );
+            questionsForUser.add(questionWrapper);
+        }
+
+        return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+    }
+}
