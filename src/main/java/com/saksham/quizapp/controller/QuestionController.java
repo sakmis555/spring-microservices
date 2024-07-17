@@ -3,6 +3,7 @@ package com.saksham.quizapp.controller;
 import com.saksham.quizapp.model.Question;
 import com.saksham.quizapp.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,36 +16,32 @@ public class QuestionController {
     QuestionService questionService;
 
     @GetMapping("allQuestions")
-    public List<Question> getAllQuestions() {
+    public ResponseEntity<List<Question>> getAllQuestions() {
         return questionService.getAllQuestions();
     };
 
     @GetMapping("{questionId}")
-    public Question getQuestion(@PathVariable int questionId) {
+    public ResponseEntity<Question> getQuestion(@PathVariable int questionId) {
         return questionService.getQuestionById(questionId);
     }
 
     @GetMapping("category/{category}")
-    public List<Question> getQuestionsByCategory(@PathVariable String category) {
+    public ResponseEntity<List<Question>> getQuestionsByCategory(@PathVariable String category) {
         return questionService.getQuestionsByCategory(category);
     };
 
     @PostMapping("add")
-    public String addQuestion(@RequestBody Question question) {
-        questionService.addQuestion(question);
-        return "Question added successfully";
+    public ResponseEntity<String> addQuestion(@RequestBody Question question) {
+        return questionService.addQuestion(question);
     }
 
     @PutMapping("update")
-    public Question updateQuestion(@RequestBody Question question) {
-        questionService.updateQuestion(question);
-        return questionService.getQuestionById(question.getId());
+    public ResponseEntity<Question> updateQuestion(@RequestBody Question question) {
+        return questionService.updateQuestion(question);
     };
 
     @DeleteMapping("delete/{questionId}")
-    public Question deleteQuestion(@PathVariable int questionId) {
-        Question question = questionService.getQuestionById(questionId);
-        questionService.deleteQuestion(questionId);
-        return question;
+    public ResponseEntity<Question> deleteQuestion(@PathVariable int questionId) {
+        return questionService.deleteQuestion(questionId);
     }
 }
