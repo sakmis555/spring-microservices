@@ -3,9 +3,7 @@ package com.saksham.quizapp.controller;
 import com.saksham.quizapp.model.Question;
 import com.saksham.quizapp.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,7 +16,35 @@ public class QuestionController {
 
     @GetMapping("allQuestions")
     public List<Question> getAllQuestions() {
-//        return "All questions";
         return questionService.getAllQuestions();
     };
+
+    @GetMapping("{questionId}")
+    public Question getQuestion(@PathVariable int questionId) {
+        return questionService.getQuestionById(questionId);
+    }
+
+    @GetMapping("category/{category}")
+    public List<Question> getQuestionsByCategory(@PathVariable String category) {
+        return questionService.getQuestionsByCategory(category);
+    };
+
+    @PostMapping("add")
+    public String addQuestion(@RequestBody Question question) {
+        questionService.addQuestion(question);
+        return "Question added successfully";
+    }
+
+    @PutMapping("update")
+    public Question updateQuestion(@RequestBody Question question) {
+        questionService.updateQuestion(question);
+        return questionService.getQuestionById(question.getId());
+    };
+
+    @DeleteMapping("delete/{questionId}")
+    public Question deleteQuestion(@PathVariable int questionId) {
+        Question question = questionService.getQuestionById(questionId);
+        questionService.deleteQuestion(questionId);
+        return question;
+    }
 }

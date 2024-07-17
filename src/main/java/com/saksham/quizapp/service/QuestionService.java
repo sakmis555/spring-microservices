@@ -17,5 +17,23 @@ public class QuestionService {
         return questionDao.findAll();
     };
 
+    public Question getQuestionById(int questionId) {
+        return questionDao.findById(questionId).orElse(new Question());
+    };
 
+    public List<Question> getQuestionsByCategory(String category) {
+        return questionDao.findAllByCategory(category);
+    }
+
+    public void addQuestion(Question question) {
+        questionDao.save(question);
+    }
+
+    public void updateQuestion(Question question) {
+        questionDao.save(question);
+    }
+
+    public void deleteQuestion(int questionId) {
+        questionDao.deleteById(questionId);
+    }
 }
