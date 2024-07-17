@@ -64,11 +64,13 @@ public class QuestionService {
     }
 
     public ResponseEntity<Question> deleteQuestion(int questionId) {
+        ResponseEntity<Question> question = null;
         try {
+            question = getQuestionById(questionId);
             questionDao.deleteById(questionId);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return getQuestionById(questionId);
+        return question;
     }
 }
