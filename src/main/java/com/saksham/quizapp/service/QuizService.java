@@ -5,6 +5,7 @@ import com.saksham.quizapp.dao.QuizDao;
 import com.saksham.quizapp.model.Question;
 import com.saksham.quizapp.model.QuestionWrapper;
 import com.saksham.quizapp.model.Quiz;
+import com.saksham.quizapp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,5 +53,19 @@ public class QuizService {
         }
 
         return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateResult(int quizId, List<Response> responses) {
+        Optional<Quiz> quiz = quizDao.findById(quizId);
+        List<Question> questions = quiz.get().getQuestions();
+        int rightAnswerCount = 0;
+        int i = 0;
+        for( Response response: responses) {
+            if(response.getResponse().equals( questions.get(i).getRightAnswer())){
+                rightAnswerCount++;
+            }
+            i++;
+        }
+        return new ResponseEntity<>(rightAnswerCount, HttpStatus.OK);
     }
 }
